@@ -14,33 +14,10 @@ public class Blog {
     private String title;
     @Size(max = 5000)
     private String description;
-    private String author;
+    private String home_image;
+    private String detail_image;
+    private String text;
 
-
-    private String image;
-
-    private Date date;
-
-    public Blog(Long id, String title, String description, String author, Date date, String image) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.author = author;
-        this.date = date;
-        this.image=image;
-    }
-
-    public Blog() {
-
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
 
     public Long getId() {
         return id;
@@ -66,19 +43,27 @@ public class Blog {
         this.description = description;
     }
 
-    public String getAuthor() {
-        return author;
+    public String getHome_image() {
+        return home_image;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setHome_image(String home_image) {
+        this.home_image = home_image;
     }
 
-    public Date getDate() {
-        return date;
+    public String getDetail_image() {
+        return detail_image;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setDetail_image(String detail_image) {
+        this.detail_image = detail_image;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 }

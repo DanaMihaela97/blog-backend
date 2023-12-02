@@ -5,6 +5,7 @@ import com.example.blog.service.BlogService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.Optional;
 @RequestMapping("api/v1/blog")
 public class BlogController {
     private final BlogService blogService;
+
     @Autowired
 
     public BlogController(BlogService blogService) {
@@ -22,7 +24,7 @@ public class BlogController {
     }
 
     @GetMapping("/blogs/{id}")
-    public ResponseEntity<Optional<Blog>> getBlogById(@PathVariable Long id){
+    public ResponseEntity<Optional<Blog>> getBlogById(@PathVariable Long id) {
         Optional<Blog> blogInfo = blogService.getBlogById(id);
         return ResponseEntity.ok(blogInfo);
     }
@@ -40,4 +42,12 @@ public class BlogController {
     public void deleteBlog(@PathVariable Long id) {
         blogService.deleteBlogById(id);
     }
+
+    @PutMapping("/blogs/edit/{id}")
+    public ResponseEntity<String> updateBlog(@RequestBody Blog blog, @PathVariable Long id) {
+        blog.setId(id);
+        blogService.updateBlog(blog);
+        return ResponseEntity.ok("");
+    }
+
 }

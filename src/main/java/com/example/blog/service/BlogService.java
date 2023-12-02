@@ -10,5 +10,5 @@ public interface BlogService {
     Optional<Blog> getBlogById(Long id);
     Blog createBlog(Blog blog);
     void deleteBlogById(Long id);
-
+    void updateBlog(Blog blog);
 }
