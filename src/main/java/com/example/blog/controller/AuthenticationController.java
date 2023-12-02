@@ -10,7 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/v1/blog")
+@RequestMapping("api/v1/auth")
 @CrossOrigin("http://localhost:4200")
 @RequiredArgsConstructor
 
@@ -20,9 +20,15 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request){
         return ResponseEntity.ok(authenticationService.register(request));
     }
-    @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> authenticate (@RequestBody AuthenticationRequest request){
-        AuthenticationResponse authenticationResponse = authenticationService.authenticate(request);
-        return ResponseEntity.ok(authenticationResponse);
+    @PostMapping("/authenticate")
+    public ResponseEntity<AuthenticationResponse> authenticate(
+            @RequestBody AuthenticationRequest request
+    ){
+        return ResponseEntity.ok(authenticationService.authenticate(request));
     }
+    @GetMapping("/logout/{jwt}")
+    public void logout(@PathVariable String jwt){
+        authenticationService.logout(jwt);
+    }
+
 }

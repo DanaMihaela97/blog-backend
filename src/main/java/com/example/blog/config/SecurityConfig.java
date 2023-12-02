@@ -20,8 +20,8 @@ public class SecurityConfig {
         httpSecurity
                 .csrf()
                 .disable()
-                .authorizeRequests()
-                .requestMatchers("/api/v1/blog/login/**", "/api/v1/blog/register/**").permitAll()
+                .authorizeHttpRequests()
+                .requestMatchers("/api/v1/auth/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()

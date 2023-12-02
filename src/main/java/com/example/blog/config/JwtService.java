@@ -4,9 +4,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -23,6 +21,7 @@ import java.util.function.Function;
 @Service
 public class JwtService {
     private static final String SECRET_KEY="2F423F4528482B4D6250655368566D597133743677397A24432646294A404E63";
+    private final List<String> blacklist = new ArrayList<>();
     public String extractUsername(String token){
         return extractClaim(token, Claims::getSubject); //  subject = the email/username
     }
@@ -57,12 +56,15 @@ public class JwtService {
     public boolean isTokenValid(String token, UserDetails userDetails){ // if token belongs to userDetails
         final String username = extractUsername(token);
         System.out.println((username.equals(userDetails.getUsername())) && !isTokenExpired(token));
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token) && !blacklist.contains(token);
     }
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
+    }
+    public void invalidateToken(String token){
+        blacklist.add(token);
     }
 }
