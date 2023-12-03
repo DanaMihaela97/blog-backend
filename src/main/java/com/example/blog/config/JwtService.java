@@ -32,15 +32,13 @@ public class JwtService {
     public String generateToken(UserDetails userDetails){
         return generateToken(new HashMap<>(), userDetails);
     }
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails){
+    private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts.builder()
                 .setClaims(extraClaims)
-                .setSubject(userDetails.getUsername()) // username in spring is EMAIL
-               // .claim("role", userDetails.getAuthorities().toArray()[0].toString())
-                .setIssuedAt(new Date(System.currentTimeMillis())) // check if the token is still valid or not
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 10 )) //600 000 - 10 minutes
-                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
-                .compact();
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256).compact();
     }
     private Claims extractAllClaims(String token){
         return Jwts.parserBuilder()
@@ -67,4 +65,5 @@ public class JwtService {
     public void invalidateToken(String token){
         blacklist.add(token);
     }
+
 }

@@ -1,5 +1,6 @@
 package com.example.blog.config;
 
+import com.example.blog.service.UserService;
 import io.micrometer.common.lang.NonNull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -20,7 +21,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JtwAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
-    private final UserDetailsService userDetailsService; // this interface already exists in spring
+    private final UserService userService; // this interface already exists in spring
 
     @Override
     protected void doFilterInternal(
@@ -31,7 +32,7 @@ public class JtwAuthenticationFilter extends OncePerRequestFilter {
 
         final String authHeader = request.getHeader("Authorization"); // header contains jwt
         final String jwt;
-        final String userEmail;
+        final String username;
         if (authHeader == null || !authHeader.startsWith("Bearer ")){ // index 0->6
             filterChain.doFilter(request, response);
             return;
@@ -39,13 +40,16 @@ public class JtwAuthenticationFilter extends OncePerRequestFilter {
         //extract token from header
         jwt = authHeader.substring(7);
         // extract user email from jwt token
-        userEmail = jwtService.extractUsername(jwt);
-        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+        username = jwtService.extractUsername(jwt);
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null){
+            UserDetails userDetails = userService.userDetailsService().loadUserByUsername(username);
 
             if (jwtService.isTokenValid(jwt, userDetails)){
                 UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        new UsernamePasswordAuthenticationToken(
+                                userDetails,
+                                null,
+                                userDetails.getAuthorities());
                 authToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request)
                 );
